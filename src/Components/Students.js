@@ -41,7 +41,6 @@ class Students extends Component{ //= ({students, schools, destroyStudent, updat
 }
 
 const mapStateToProps = ({schools , students}) => ({schools, students})
-
 const mapDispatchToProps = (dispatch) =>{
   return{
     destroyStudent:(student) => dispatch(actions.destroyStudent(student)),
