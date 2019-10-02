@@ -3,7 +3,18 @@ import {actions} from '../store';
 import {connect} from 'react-redux';
 
 
-const School = ({students, schools, id, destroyStudent}) =>{
+class School extends Component{ //= ({students, schools, id, destroyStudent, updateStudent}) =>{
+  constructor(){
+    super();
+    this.onChange = this.onChange.bind(this)
+  }
+  onChange(student){
+    const studentName = student.split(' ')[0]
+    const studentObj = this.props.students.find(student=> studentName === student.firstName)
+    this.props.updateStudent(studentObj, this.props.match.params.id)
+  }
+  render(){
+    const {students, schools, id, destroyStudent} = this.props
   const schoolIds = schools.map(school=>school.id)
   const schoolNames = schools.map(school=>school.name)
   const school = schools.find(school=>id === school.id)
@@ -23,10 +34,10 @@ const School = ({students, schools, id, destroyStudent}) =>{
             }
           <div>
 
-          <select>
+          <select onChange={(ev)=>this.onChange(ev.target.value)}>
           <option>--Enroll Student--</option>
             {
-              studentFilter(false).map(student=><option key={student.id} id='student'>{student.firstName} {student.lastName}</option>)
+              studentFilter(false).map(student=><option key={student.id}id='student'>{student.firstName} {student.lastName}</option>)
             }
           </select>
           {
@@ -44,6 +55,7 @@ const School = ({students, schools, id, destroyStudent}) =>{
           </div>
         )
 }
+}
 
 const mapStateToProps = (state, props)=> {
   const {students, schools} = state
@@ -57,7 +69,7 @@ const mapStateToProps = (state, props)=> {
 const mapDispatchToProps = (dispatch) =>{
   return{
     destroyStudent:(student) => dispatch(actions.destroyStudent(student)),
-    updateStudent: (student) =>dispatch(actions.updateStudent({...student, schoolId}))
+    updateStudent: (student, schoolId) =>dispatch(actions.updateStudent({...student, schoolId}))
   }
 }
 

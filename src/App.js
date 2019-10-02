@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {HashRouter, Switch, Route} from 'react-router-dom';
+import {HashRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {actions} from './store';
 import {connect} from 'react-redux';
 import Nav from './Components/Nav';
@@ -24,10 +24,7 @@ class App extends Component{
       <Route path='/students' component={Students}/>
       <Route exact path='/schools' component={Schools}/>
       <Route path='/schools/:id' component={School}/>
-                {/*
-                <Route component={MostPopular}/>
-      <Route component={TopSchool}/>
-                */}
+      <Redirect to='home'/>
       </Switch>
     </HashRouter>
     )

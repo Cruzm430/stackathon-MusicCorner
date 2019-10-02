@@ -1,32 +1,43 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {actions} from '../store';
 import { connect } from 'react-redux';
 
 
-const Students = ({students, schools, destroyStudent, updateStudent})=>{
-  return(
-    <div>
-      {
-        students.map(student=>
-        <div id='student' key={student.id}>
-        {student.firstName} {student.lastName}
-        <br/>
-        <button onClick={()=> destroyStudent(student)}>
-          Remove Student
-        </button>
-        <br/>
-        Enroll student in
-        <select>     
-          <option>--Schools--</option>
-          {schools.map(school=><option key={school.id} onClick={()=>updateStudent(student)}>
-          {school.name}
-          </option>)}
-        </select>
-        </div>
-        )
-      }
-    </div>
-  )
+class Students extends Component{ //= ({students, schools, destroyStudent, updateStudent})=>{
+  constructor(){
+    super();
+    this.onChange = this.onChange.bind(this)
+  }
+  onChange(student, schoolId){
+
+    this.props.updateStudent(student, schoolId)
+  }
+  render(){
+    const {students, schools, destroyStudent} = this.props
+    return(
+      <div>
+        {
+          students.map(student=>
+          <div id='student' key={student.id}>
+          {student.firstName} {student.lastName}
+          <br/>
+          <button onClick={()=> destroyStudent(student)}>
+            Remove Student
+          </button>
+          <br/>
+          Enroll student in
+          <select onChange={(ev)=>this.onChange(student, ev.target.value)}>     
+            <option>--Schools--</option>
+            {schools.map(school=><option key={school.id} value={school.id}>
+            {school.name}
+            </option>)}
+          </select>
+          </div>
+          )
+        }
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = ({schools , students}) => ({schools, students})
@@ -34,7 +45,7 @@ const mapStateToProps = ({schools , students}) => ({schools, students})
 const mapDispatchToProps = (dispatch) =>{
   return{
     destroyStudent:(student) => dispatch(actions.destroyStudent(student)),
-    updateStudent: (student) =>dispatch(actions.updateStudent({...student, schoolId}))
+    updateStudent: (student, schoolId) =>dispatch(actions.updateStudent({...student, schoolId}))
   }
 }
 

@@ -59,7 +59,6 @@ const destroyStudent = (student) =>{
 
 const updateStudent = (student) =>{
   return async(dispatch)=>{
-    console.log(student)
     await axios.put(`/api/students/${student.id}`, student)
     return dispatch(_updateStudent(student))
   }

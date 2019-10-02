@@ -2,17 +2,18 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 
-const Nav = ({students, schools, popularSchoolIdx, popularNum, gpaIdx, location:{pathname}})=>{ 
+const Nav = ({students, schools, popularSchoolIdx, popularNum, gpaIdx, sortedStudents, location:{pathname}})=>{ 
   const schoolNames = schools.map(school=> school.name)
   const schoolIds = schools.map(school=>school.id)
-
+  const checker = sortedStudents().map(arr=>arr.length).reduce((accum,item)=>accum+item,0)
+  console.log(checker)
   return(
           <nav>
-            <Link to='/home'  >Acme Schools</Link> 
-            <Link to='/schools'  className={ pathname === '/schools' ? 'active': ''}>Schools({schools.length})</Link> 
-            <Link to='/students'  className={ pathname === '/students' ? 'active': ''}>Students({students.length})</Link> 
-            <Link to={`/schools/${schoolIds[popularSchoolIdx]}`}  className={ pathname === `/schools/${schoolIds[popularSchoolIdx]}` ? 'active': ''}>Most Popular {schoolNames[popularSchoolIdx]} ({popularNum})</Link> 
-            <Link to={`/schools/${schoolIds[gpaIdx]}`}  className={ pathname === `/schools/${schoolIds[gpaIdx]}` ? 'active': ''}>Top School ({schoolNames[gpaIdx]})</Link> 
+            <Link to='/home'>Acme Schools</Link>
+            <Link to='/schools'  className={ pathname === '/schools' ? 'active': ''}>Schools({schools.length})</Link>
+            <Link to='/students'  className={ pathname === '/students' ? 'active': ''}>Students({students.length})</Link>
+            <Link to={!popularSchoolIdx && !checker ? '': `/schools/${schoolIds[popularSchoolIdx]}`}  className={ pathname === `/schools/${schoolIds[popularSchoolIdx]}` ? 'active': ''}>Most Popular {!popularSchoolIdx && !checker ? '' : schoolNames[popularSchoolIdx]} ({popularNum})</Link> 
+            <Link to={ !gpaIdx && !checker ? '' : `/schools/${schoolIds[gpaIdx]}`}  className={ pathname === `/schools/${schoolIds[gpaIdx]}` ? 'active': ''}>Top School ({!gpaIdx && !checker ? '' : schoolNames[gpaIdx]})</Link>
           </nav>
   )
 }
@@ -32,11 +33,11 @@ const mapStateToProps = (state) => {
   const averageGpa = gpas.map(school=>{
     if(school.length > 0){
       let reducedNum = school.reduce((accum,student)=> student += accum)
-      reducedNum = reducedNum/2
+      reducedNum = reducedNum/school.length
       return reducedNum.toFixed(2)
     }
     else{
-      return []
+      return 0
     }
   })
 
@@ -45,11 +46,12 @@ const mapStateToProps = (state) => {
   const gpaIdx = GPAs.indexOf(highestGPA*1)
 
   return {
-    students:students,
-    popularNum:popularNum,
-    popularSchoolIdx:popularSchoolIdx,
-    schools:schools,
-    gpaIdx:gpaIdx
+    students,
+    popularNum,
+    popularSchoolIdx,
+    schools,
+    gpaIdx,
+    sortedStudents
   }
 }
 

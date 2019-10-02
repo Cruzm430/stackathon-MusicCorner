@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 const Home = ({students, schools, popularNum, popularSchoolIdx, gpaIdx, highestGPA}) =>{
   const schoolNames = schools.map(school=> school.name)
   const schoolIds = schools.map(school=>school.id)
-
-
   return (
     <div>
       <h1>Home</h1>
@@ -34,11 +32,11 @@ const mapStateToProps = (state) =>{
   const averageGpa = gpas.map(school=>{
     if(school.length > 0){
       let reducedNum = school.reduce((accum,student)=> student += accum)
-      reducedNum = reducedNum/2
+      reducedNum = reducedNum/school.length
       return reducedNum.toFixed(2)
     }
     else{
-      return []
+      return 0
     }
   })
 

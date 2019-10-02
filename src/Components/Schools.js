@@ -2,9 +2,19 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom'
 import {actions} from '../store';
-import { updateStudent, destroyStudent } from '../store/actions';
 
-const Schools = ({students, schools, update})=>{
+class Schools extends Component{
+  constructor(){
+    super()
+    this.onChange = this.onChange.bind(this)
+  }
+  onChange(student, schoolId){
+    const studentName = student.split(' ')[0]
+    const studentObj = this.props.students.find(student=> studentName === student.firstName)
+    this.props.updateStudent(studentObj, schoolId)
+  }
+  render(){
+    const {students, schools} = this.props
   return(
     <div>
     {
@@ -19,10 +29,10 @@ const Schools = ({students, schools, update})=>{
               students.filter(student=>school.id === student.schoolId).length
             }
           </p>
-          <select>
+          <select onChange={(ev) => this.onChange(ev.target.value, school.id)}>
             <option>--Enroll Student--</option>
             {
-              students.filter(student=>school.id !== student.schoolId).map(student=><option key={student.id} onChange={update} value={`${school.id}`}>{student.firstName} {student.lastName}</option>)
+              students.filter(student=>school.id !== student.schoolId).map(student=><option key={student.id}>{student.firstName} {student.lastName}</option>)
             }
           </select>
         </div>
@@ -31,12 +41,13 @@ const Schools = ({students, schools, update})=>{
     </div>
   )
 }
+}
 
 const mapStateToProps = ({schools,students})=> ({schools,students})
 
 const mapDispatchToProps = (dispatch) =>{
   return{
-    update:(student) => dispatch(actions.updateStudent(...student, schoolId))
+    updateStudent: (student, schoolId) =>dispatch(actions.updateStudent({...student, schoolId}))
   }
 }
 
