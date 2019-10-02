@@ -9,7 +9,6 @@ class Students extends Component{ //= ({students, schools, destroyStudent, updat
     this.onChange = this.onChange.bind(this)
   }
   onChange(student, schoolId){
-
     this.props.updateStudent(student, schoolId)
   }
   render(){
@@ -121,7 +120,7 @@ export default connect(mapStateToProps,mapDispatchToProps) (Students)
   //       </li>
   //       <li id='student-info'>GPA: {student.GPA}
   //       </li>
-  //       <button onClick={()=>this.props.destroyStudent(student)}>
+  //       <button onClick={()=>this.props.destroyStudent(student)}>a
   //         Remove Student
   //       </button>
   //       <li>
