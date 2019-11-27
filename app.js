@@ -2,51 +2,22 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 const path = require('path');
-const db = require('./db')
-const {School, Student} = db.models
+const client_id = '353ef1b37482472d81114631b893922d'; 
+const client_secret = 'bf197ca4e4554ba5bfe86a62627d6f3e';
+const redirect_uri = 'http://localhost:5000/back/';
 
 app.use('/build', express.static(path.join(__dirname, 'dist')));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.get('/', (req, res, next)=> res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/back/', (req, res, next)=> res.sendFile(path.join(__dirname, 'index.html')));
 
-app.get('/api/schools', (req,res,next)=>{
-  School.findAll()
-    .then(schools=>res.send(schools))
-    .catch(next)
-})
-
-app.get(`/school/:id`, (req,res,next)=>{
-  School.findByPk(req.params.id)
-  .then(school=>res.send(school))
-  .catch(next)
-})
-
-app.get('/api/students', async (req,res,next)=>{
-  Student.findAll()
-    .then(students => res.send(students))
-    .catch(next)
-})
-
-app.put('/api/students/:id', (req,res,next)=>{
-  Student.findByPk(req.params.id)
-  .then(student=>student.update(req.body))
-  .then(student => res.send(student))
-  .catch(next)
-})
-
-app.post('/api/students', (req,res,next)=>{
-  Student.create(req.body)
-  .then(student=> res.send(student))
-  .then(()=>res.status(201))
-  .catch(next)
-})
-
-app.delete('/api/students/:id', (req, res, next)=>{
-  Student.findByPk(req.params.id)
-  .then(student => student.destroy())
-  .then(()=>res.sendStatus(204))
-  .catch(next)
-})
+app.get('/login', function(req, res) {
+  var scopes = 'user-read-private user-read-email';
+  res.redirect('https://accounts.spotify.com/authorize' +
+    '?response_type=code' +
+    '&client_id=' + client_id +
+    (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
+    '&redirect_uri=' + encodeURIComponent(redirect_uri));
+  });
 
 module.exports = app;
